@@ -4,11 +4,12 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Deeksha-chouhan/enterprise-devops-platform.git'
+                git branch: 'main',
+                    url: 'https://github.com/Deeksha-chouhan/enterprise-devops-platform.git'
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('SonarQube') {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
