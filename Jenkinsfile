@@ -1,24 +1,36 @@
 pipeline {
     agent any
 
+    tools {
+        sonarQube 'SonarScanner'
+    }
+
     stages {
 
         stage('Clone') {
             steps {
-                echo 'Source code already available'
+                git 'https://github.com/Deeksha-chouhan/enterprise-devops-platform.git'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('SonarQube Analysis') {
             steps {
-                sh 'cd app && docker build -t enterprise-devops-app:v1 .'
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                    sonar-scanner \
+                    -Dsonar.projectKey=enterprise-devops-platform \
+                    -Dsonar.projectName=Enterprise-DevOps-Platform \
+                    -Dsonar.sources=app
+                    '''
+                }
             }
         }
 
-        stage('List Images') {
+        stage('Docker Build') {
             steps {
-                sh 'docker images'
+                sh 'docker build -t enterprise-devops-app:v1 app/'
             }
         }
+
     }
 }
