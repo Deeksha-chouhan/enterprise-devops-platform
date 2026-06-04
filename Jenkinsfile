@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        sonarRunner 'SonarScanner'
+    }
+
     stages {
 
         stage('SonarQube Analysis') {
@@ -9,7 +13,6 @@ pipeline {
                     sh '''
                     sonar-scanner \
                     -Dsonar.projectKey=enterprise-devops-platform \
-                    -Dsonar.projectName=Enterprise-DevOps-Platform \
                     -Dsonar.sources=app
                     '''
                 }
@@ -21,6 +24,5 @@ pipeline {
                 sh 'docker build -t enterprise-devops-app:v1 app/'
             }
         }
-
     }
 }
