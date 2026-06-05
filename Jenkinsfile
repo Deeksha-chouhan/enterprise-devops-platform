@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'main',
@@ -10,17 +11,20 @@ pipeline {
         }
 
         stage('SonarQube') {
-    steps {
-        withSonarQubeEnv('SonarQube') {
-            withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_AUTH_TOKEN')]) {
-                sh '''
-                    /opt/sonar-scanner/bin/sonar-scanner \
-                    -Dsonar.projectKey=enterprise-devops \
-                    -Dsonar.sources=. \
-                    -Dsonar.host.url=http://172.16.233.129:9001 \
-                    -Dsonar.login=$SONAR_AUTH_TOKEN
-                '''
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_AUTH_TOKEN')]) {
+                        sh '''
+                            /opt/sonar-scanner/bin/sonar-scanner \
+                            -Dsonar.projectKey=enterprise-devops \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://172.16.233.129:9001 \
+                            -Dsonar.login=$SONAR_AUTH_TOKEN
+                        '''
+                    }
+                }
             }
         }
+
     }
 }
