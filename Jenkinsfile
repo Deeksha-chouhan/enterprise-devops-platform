@@ -6,7 +6,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/Deeksha-chouhan/enterprise-devops-platform.git'
+                url: 'https://github.com/Deeksha-chouhan/enterprise-devops-platform.git'
             }
         }
 
