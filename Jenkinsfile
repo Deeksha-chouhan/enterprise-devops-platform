@@ -15,11 +15,11 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_AUTH_TOKEN')]) {
                         sh '''
-                            /opt/sonar-scanner/bin/sonar-scanner \
-                            -Dsonar.projectKey=enterprise-devops-platform \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=http://172.16.233.129:9001 \
-                            -Dsonar.login=$SONAR_AUTH_TOKEN
+                        /opt/sonar-scanner/bin/sonar-scanner \
+                        -Dsonar.projectKey=enterprise-devops-platform \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://172.16.233.129:9001 \
+                        -Dsonar.login=$SONAR_AUTH_TOKEN
                         '''
                     }
                 }
@@ -28,9 +28,7 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh '''
-                    docker build -t 9691427913/enterprise-devops-platform:latest ./app
-                '''
+                sh 'docker build -t 9691427913/enterprise-devops-platform:latest ./app'
             }
         }
 
@@ -42,23 +40,20 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh '''
-                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push 9691427913/enterprise-devops-platform:latest
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    docker push 9691427913/enterprise-devops-platform:latest
                     '''
                 }
             }
         }
-    }
-stage('Deploy to Kubernetes') {
-    steps {
-        sh '''
-            /usr/local/bin/kubectl apply -f kubernetes/deployment.yaml
-            /usr/local/bin/kubectl apply -f kubernetes/service.yaml
-            /usr/local/bin/kubectl rollout restart deployment/enterprise-devops-platform
 
-            /usr/local/bin/kubectl rollout status deployment/enterprise-devops-platform
-        '''
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
+                kubectl apply -f kubernetes/deployment.yaml
+                kubectl apply -f kubernetes/service.yaml
+                '''
+            }
+        }
     }
 }
-}
-
