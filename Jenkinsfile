@@ -49,4 +49,16 @@ pipeline {
             }
         }
     }
+stage('Deploy to Kubernetes') {
+    steps {
+        sh '''
+            /usr/local/bin/kubectl apply -f kubernetes/deployment.yaml
+            /usr/local/bin/kubectl apply -f kubernetes/service.yaml
+            /usr/local/bin/kubectl rollout restart deployment/enterprise-devops-platform
+
+            /usr/local/bin/kubectl rollout status deployment/enterprise-devops-platform
+        '''
+    }
 }
+}
+

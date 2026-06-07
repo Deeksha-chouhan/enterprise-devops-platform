@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enterprise-devops-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: enterprise-devops-platform
+  template:
+    metadata:
+      labels:
+        app: enterprise-devops-platform
+    spec:
+      containers:
+      - name: enterprise-devops-platform
+        image: 9691427913/enterprise-devops-platform:latest
+        ports:
+        - containerPort: 5000
