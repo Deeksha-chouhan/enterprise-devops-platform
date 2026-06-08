@@ -26,6 +26,17 @@ pipeline {
             }
         }
 
+        stage('Trivy Security Scan') {
+            steps {
+                sh '''
+                trivy image \
+                --severity HIGH,CRITICAL \
+                --no-progress \
+                9691427913/enterprise-devops-platform:latest
+                '''
+            }
+        }
+
         stage('Docker Build') {
             steps {
                 sh 'docker build -t 9691427913/enterprise-devops-platform:latest ./app'
